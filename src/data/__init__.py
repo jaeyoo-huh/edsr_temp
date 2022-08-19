@@ -22,14 +22,7 @@ class Dataset:
         edsr_dataset = []
         module = import_module('data.srdata')
         edsr_dataset.append(getattr(module, 'SRData')(args, name='DIV2K'))
-        
-
-        # single_data = edsr_dataset.__getitem__(0)
-        # hr = single_data[0][0]
-        # hrnp = np.array(hr)
-        # imageio.imwrite('./hr.png', hrnp)
-        
-        
+    
         self.loader_train = dataloader.DataLoader(
             MyConcatDataset(edsr_dataset),
             batch_size = args.batch_size,
@@ -39,6 +32,3 @@ class Dataset:
         )
 
         # self.loader_train.dataset.__getitem__(0)
-        
-        # hrnp = np.array(hr)
-        # imageio.imwrite('./hr.png', hrnp)
