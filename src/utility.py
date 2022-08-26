@@ -1,5 +1,6 @@
 import os
 import math
+from math import log10, sqrt
 import time
 import datetime
 from multiprocessing import Process
@@ -84,14 +85,15 @@ class checkpoint():
 
     def save(self, trainer, epoch, is_best=False):
         trainer.model.save(self.get_path('model'), epoch, is_best=is_best)
-        trainer.loss.save(self.dir)
-        trainer.loss.plot_loss(self.dir, epoch)
+        # trainer.loss.save(self.dir)
+        # trainer.loss.plot_loss(self.dir, epoch)
 
         self.plot_psnr(epoch)
-        trainer.optimizer.save(self.dir)
+        # trainer.optimizer.save(self.dir)
         torch.save(self.log, self.get_path('psnr_log.pt'))
 
     def add_log(self, log):
+        self.log = self.log.to(torch.device('cuda'))
         self.log = torch.cat([self.log, log])
 
     def write_log(self, log, refresh=False):
@@ -162,6 +164,15 @@ def quantize(img, rgb_range):
     pixel_range = 255 / rgb_range
     return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
 
+def psnr(sr, hr):
+    diff = sr - hr    
+    mse = np.mean((diff) ** 2)
+    if mse == 0 :
+        return 100
+    psnr = 20 * log10(255 / sqrt(mse))
+    
+    return psnr
+
 def calc_psnr(sr, hr, scale, rgb_range, dataset=None):
     if hr.nelement() == 1: return 0
 
@@ -178,6 +189,9 @@ def calc_psnr(sr, hr, scale, rgb_range, dataset=None):
     valid = diff[..., shave:-shave, shave:-shave]
     mse = valid.pow(2).mean()
 
+    if mse == 0 :
+        return 100
+    
     return -10 * math.log10(mse)
 
 def make_optimizer(args, target):

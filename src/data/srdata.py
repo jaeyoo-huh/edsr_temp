@@ -19,9 +19,15 @@ class SRData(data.Dataset):
         self.train = train
         self.scale = args.scale
 
-        self.dir_hr = os.path.join(args.dir_data, 'DIV2K_train_HR')
-        self.dir_lr = os.path.join(args.dir_data, 'DIV2K_train_LR_bicubic')        
-        self.dir_lr_X2 = os.path.join(self.dir_lr, 'X2')
+        if train:
+            self.dir_hr = os.path.join(args.dir_data, 'DIV2K_train_HR')
+            self.dir_lr = os.path.join(args.dir_data, 'DIV2K_train_LR_bicubic')
+            self.dir_lr_X2 = os.path.join(self.dir_lr, 'X2')
+        elif train == False:
+            self.dir_hr = os.path.join(args.dir_data, 'DIV2K_test_HR')
+            self.dir_lr = os.path.join(args.dir_data, 'DIV2K_test_LR')
+            self.dir_lr_X2 = os.path.join(self.dir_lr, 'X2')
+
 
         list_hr, list_lr = self._scan()
         self.images_hr, self.images_lr = [], []
@@ -83,16 +89,16 @@ class SRData(data.Dataset):
         hrimage = pair[0]        
         lrimage = pair[1]
         
-        nphrimage = np.array(hrimage)
-        nplrimage = np.array(lrimage)
+        # nphrimage = np.array(hrimage)
+        # nplrimage = np.array(lrimage)
 
-        imageio.imwrite('./temp/{}_hr.png'.format(idx), nphrimage)
-        imageio.imwrite('./temp/{}_lr.png'.format(idx), nplrimage)
+        imageio.imwrite('./temp/{}_hr.png'.format(idx), hrimage)
+        imageio.imwrite('./temp/{}_lr.png'.format(idx), lrimage)
         
     def __getitem__(self, idx):
         pair = self.make_pair(idx)
-        if idx % 4000 == 0:
-            self.check_item(pair, idx)    
+        # if idx % 4000 == 0:
+        #     self.check_item(pair, idx)    
         pair_t = common.np2Tensor(*pair, rgb_range=self.args.rgb_range)
 
         return pair_t[0], pair_t[1]
@@ -110,14 +116,17 @@ class SRData(data.Dataset):
             return idx
 
     def get_patch(self, hr, lr):
-        lr, hr = common.get_patch(
-                lr, hr,
-                patch_size=self.args.patch_size,
-                scale=2,
-                multi=(len(self.scale) > 1)
-            )
+        if self.train:
+            lr, hr = common.get_patch(
+                    lr, hr,
+                    patch_size=self.args.patch_size,
+                    scale=2,
+                    multi=(len(self.scale) > 1)
+                )
         if not self.args.no_augment: lr, hr = common.augment(hr, lr)
-
+        else:
+            ih, iw = lr.shape[:2]
+            hr = hr[0:ih * 2, 0:iw * 2]
         return lr, hr
 
 

@@ -7,6 +7,8 @@ import loss
 from option import args
 from trainer import Trainer
 import model.edsr
+import numpy as np
+import imageio
 
 
 torch.manual_seed(args.seed)
@@ -21,16 +23,28 @@ def main():
     # while not t.terminate():
     for epochs in range(args.epochs):
         t.train(epochs)
+        t.eval(epochs)
         
 
     checkpoint.done()
 
 
-
-
-
 if __name__ == '__main__':
+    
+    # sr = torch.load("./experiment/test/sr_150.pt")    
+    # sr = sr.cpu()
+    # srnp = sr.detach().numpy()
+    # img1 = srnp[5].transpose(1,2,0)
+    # imageio.imwrite('./temp/sr2.png', img1)
+    # print(sr.shape)
+
+    # ckp = torch.load("./experiment/test/log_150.pt")
+    # ckp = ckp.cpu()
+    # ckpnp = ckp.detach().numpy()
+    # print(ckpnp)
+
     main()
+
     # net = model_temp.edsr.EDSR(args)
     # randomt = torch.randn([4,3,16,16])
     # print(net(randomt).shape)

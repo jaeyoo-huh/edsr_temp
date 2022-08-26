@@ -25,10 +25,23 @@ class Dataset:
     
         self.loader_train = dataloader.DataLoader(
             MyConcatDataset(edsr_dataset),
+            # edsr_dataset,
             batch_size = args.batch_size,
+            # batch_size= 10,
             shuffle = True,
             generator = torch.Generator(device = 'cuda'),
             num_workers = args.num_workers,
         )
 
+        test_dataset = []
+        test_module = import_module('data.srdata')
+        test_dataset.append(getattr(test_module, 'SRData')(args, train=False, name='DIV2K'))
+
+        self.loader_test = dataloader.DataLoader(
+            MyConcatDataset(test_dataset),
+            batch_size=1,
+            shuffle=False,
+            pin_memory=True,
+            num_workers = args.num_workers,
+        )
         # self.loader_train.dataset.__getitem__(0)

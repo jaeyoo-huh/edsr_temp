@@ -1,0 +1,5 @@
+# experiment
+experiment/*
+
+# pycache
+src/__pycache__/*
