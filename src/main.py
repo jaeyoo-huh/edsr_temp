@@ -10,7 +10,6 @@ import model.edsr
 import numpy as np
 import imageio
 
-
 torch.manual_seed(args.seed)
 checkpoint = utility.checkpoint(args)
 
@@ -42,6 +41,12 @@ if __name__ == '__main__':
     # ckp = ckp.cpu()
     # ckpnp = ckp.detach().numpy()
     # print(ckpnp)
+
+    # a = [1,2,3,4,5]
+    # f = open("./experiment/test4/psnr.txt", "w")
+    # for i in range(5):
+    #     f.write("PSNR_{} : {}\n".format(i+1, a[i]))
+    # f.close()
 
     main()
 

@@ -166,6 +166,9 @@ def quantize(img, rgb_range):
 
 def psnr(sr, hr):
     diff = sr - hr    
+    diff = diff.cpu().numpy()
+    # diff = diff.numpy()
+    # mse = diff.pow(2).mean()
     mse = np.mean((diff) ** 2)
     if mse == 0 :
         return 100

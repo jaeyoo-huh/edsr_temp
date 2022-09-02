@@ -45,7 +45,7 @@ parser.add_argument('--n_colors', type=int, default=3,
                     help='number of color channels to use')
 parser.add_argument('--chop', action='store_true',
                     help='enable memory-efficient forward')
-parser.add_argument('--no_augment', action='store_true',
+parser.add_argument('--no_augment', action='store_false',
                     help='do not use data augmentation')
 
 # Model specifications
@@ -91,7 +91,7 @@ parser.add_argument('--reset', action='store_true',
                     help='reset the training')
 parser.add_argument('--test_every', type=int, default=1000,
                     help='do test per every N batches')
-parser.add_argument('--epochs', type=int, default=300,
+parser.add_argument('--epochs', type=int, default=500,
                     help='number of epochs to train')
 parser.add_argument('--batch_size', type=int, default=16,
                     help='input batch size for training')
