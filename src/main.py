@@ -48,8 +48,10 @@ if __name__ == '__main__':
     #     f.write("PSNR_{} : {}\n".format(i+1, a[i]))
     # f.close()
 
-    main()
+    main() 
 
-    # net = model_temp.edsr.EDSR(args)
+    # net = model.edsr.LayerNorm2d(channels=3)
+    # # net1 = model.edsr.NAFBlock(args, c=3)
+    # net = model.edsr.SimpleGate()
     # randomt = torch.randn([4,3,16,16])
     # print(net(randomt).shape)

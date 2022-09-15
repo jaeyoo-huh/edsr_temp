@@ -13,7 +13,7 @@ import torch
 import torch.utils.data as data
 
 class SRData(data.Dataset):
-    def __init__(self, args, name, train=True):
+    def __init__(self, args, name, train):
         self.args = args
         self.name = name
         self.train = train
@@ -123,11 +123,11 @@ class SRData(data.Dataset):
                     scale=2,
                     multi=(len(self.scale) > 1)
                 )
-        # if not self.args.no_augment: 
-        lr, hr = common.augment(lr, hr)
-        # else:
-        #     ih, iw = lr.shape[:2]
-        #     hr = hr[0:ih * 2, 0:iw * 2]
+            lr, hr = common.augment(lr, hr)        
+        else:
+            ih, iw = lr.shape[:2]
+            hr = hr[0:ih * 2, 0:iw * 2]
+
         return lr, hr
 
 
